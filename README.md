@@ -9,7 +9,7 @@ This script works only with password-less keys. **Do not set a password** as thi
 1. Run the script in your root build directory:
 
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/Envoy-Z-Lab/Signing-Script/main/keygen.sh)
+bash <(curl -s https://raw.githubusercontent.com/Shravan55555/Signing-Script/main/keygen.sh)
 ```
 
 2. Provide the certificate details when prompted and confirm.
