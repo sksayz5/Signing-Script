@@ -15,7 +15,7 @@ if [ -d ~/.android-certs ]; then
 fi
 
 # Define default subject line
-subject='/C=PH/ST=Manila/L=Philippines/O=The Scape/OU=The Scape/CN=The Scape/emailAddress=lqlp0011@gmail.com'
+default_subject="/C=US/ST=California/L=Mountain View/O=Android/OU=Android/CN=Android/emailAddress=android@android.com"
 
 # Ask the user if they want to use default values or enter new ones
 read -p "Do you want to use the default subject line: '$default_subject'? (y/n): " use_default
