@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Define destination directory
-mkdir -p vendor/extra
-destination_dir="vendor/extra"
+mkdir -p vendor/derp/signing
+destination_dir="vendor/derp/signing"
 
 # Check if the directory for certificates already exists
 if [ -d ~/.android-certs ]; then
@@ -41,7 +41,7 @@ fi
 mkdir -p ~/.android-certs
 
 # Generate keys
-for key_type in releasekey platform shared media networkstack testkey cyngn-priv-app bluetooth sdk_sandbox verifiedboot nfc; do
+for key_type in releasekey platform shared media networkstack nfc testkey cyngn-priv-app bluetooth sdk_sandbox verifiedboot nfc; do
     ./development/tools/make_key ~/.android-certs/$key_type "$subject"
 done
 
