@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Define destination directory
-mkdir -p vendor/derp/signing
-destination_dir="vendor/derp/signing"
+mkdir -p vendor/aosp/signing
+destination_dir="vendor/aosp/signing"
 
 # Check if the directory for certificates already exists
 if [ -d ~/.android-certs ]; then
