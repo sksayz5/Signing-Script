@@ -24,7 +24,7 @@ if [ "$use_default" == "y" ]; then
     subject="$default_subject"
 else
     # Prompt user for certificate subject information
-     echo "Please enter the following details:"
+    echo "Please enter the following details:"
     read -p "In (C): " C
     read -p "India (ST): " ST
     read -p "Bengaluru (L): " L
