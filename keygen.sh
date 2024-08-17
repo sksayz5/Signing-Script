@@ -24,14 +24,14 @@ if [ "$use_default" == "y" ]; then
     subject="$default_subject"
 else
     # Prompt user for certificate subject information
-    echo "Please enter the following details:"
-    read -p "Country Shortform (C): "In
-    read -p "Country Longform (ST): "India
-    read -p "Location (L): "Bengaluru
-    read -p "Organization (O): "android
-    read -p "Organizational Unit (OU): "android
-    read -p "Common Name (CN): "android
-    read -p "Email Address (emailAddress): "srasidda.ks@gmail.com
+     echo "Please enter the following details:"
+    read -p "In (C): " C
+    read -p "India (ST): " ST
+    read -p "Bengaluru (L): " L
+    read -p "android (O): " O
+    read -p "android (OU): " OU
+    read -p "android (CN): " CN
+    read -p "srasidda.ks@gmail.com (emailAddress): " emailAddress
 
     # Construct subject string for certificates
     subject="/C=$C/ST=$ST/L=$L/O=$O/OU=$OU/CN=$CN/emailAddress=$emailAddress"
