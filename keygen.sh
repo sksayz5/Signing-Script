@@ -22,19 +22,6 @@ read -p "Do you want to use the default subject line: '$default_subject'? (y/n):
 
 if [ "$use_default" == "y" ]; then
     subject="$default_subject"
-else
-    # Prompt user for certificate subject information
-    echo "Please enter the following details:"
-    read -p "Country Shortform (C): " C
-    read -p "Country Longform (ST): " ST
-    read -p "Location (L): " L
-    read -p "Organization (O): " O
-    read -p "Organizational Unit (OU): " OU
-    read -p "Common Name (CN): " CN
-    read -p "Email Address (emailAddress): " emailAddress
-    
-    # Construct subject string for certificates
-    subject="/C=$C/ST=$ST/L=$L/O=$O/OU=$OU/CN=$CN/emailAddress=$emailAddress"
 fi
 
 # Create directory for certificates
