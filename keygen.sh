@@ -25,13 +25,13 @@ if [ "$use_default" == "y" ]; then
 else
     # Prompt user for certificate subject information
     echo "Please enter the following details:"
-    read -p "In (C): " In
-    read -p "India (ST): " India
-    read -p "Bengaluru (L): " Bengaluru
-    read -p "android (O): " android
-    read -p "android (OU): " android
-    read -p "android (CN): " android
-    read -p "Email Address (emailAddress): " srasidda.ks@gmail.com
+    read -p "Country Shortform (In): " C
+    read -p "Country Longform (India): " ST
+    read -p "Location (Bengaluru): " L
+    read -p "Organization (sayz): " O
+    read -p "Organizational Unit (sayz): " OU
+    read -p "Common Name (sayz): " CN
+    read -p "Email Address (srasidda.ks@gmail.com): " emailAddress
     
     # Construct subject string for certificates
     subject="/C=$C/ST=$ST/L=$L/O=$O/OU=$OU/CN=$CN/emailAddress=$emailAddress"
@@ -41,7 +41,7 @@ fi
 mkdir -p ~/.android-certs
 
 # Generate keys
-for key_type in releasekey platform shared media networkstack nfc testkey cyngn-priv-app bluetooth sdk_sandbox verifiedboot nfc; do
+for key_type in releasekey platform shared media networkstack nfc testkey cyngn-priv-app bluetooth sdk_sandbox verifiedboot; do
     ./development/tools/make_key ~/.android-certs/$key_type "$subject"
 done
 
