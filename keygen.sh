@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Define destination directory
-mkdir -p vendor/aosp/signing
-destination_dir="vendor/aosp/signing"
+mkdir -p everest
+destination_dir="vendor/everest/signing"
 
 # Check if the directory for certificates already exists
 if [ -d ~/.android-certs ]; then
-    read -p "~/.android-certs already exists. Do you want to delete it and proceed? (y/n): " choice
+    read -p "~/.android-certs already exists. Do you want to delete it and proceed? (y/n): " y
     if [ "$choice" != "y" ]; then
         echo "Exiting script."
         exit 1
@@ -25,14 +25,14 @@ if [ "$use_default" == "y" ]; then
 else
     # Prompt user for certificate subject information
     echo "Please enter the following details:"
-    read -p "In (C): " C
-    read -p "India (ST): " ST
-    read -p "Bengaluru (L): " L
-    read -p "android (O): " O
-    read -p "android (OU): " OU
-    read -p "android (CN): " CN
-    read -p "srasidda.ks@gmail.com (emailAddress): " emailAddress
-
+    read -p "In (C): " In
+    read -p "India (ST): " India
+    read -p "Bengaluru (L): " Bengaluru
+    read -p "android (O): " android
+    read -p "android (OU): " android
+    read -p "android (CN): " android
+    read -p "srasidda.ks@gmail.com (emailAddress): " srasidda.ks@gmail.com
+    
     # Construct subject string for certificates
     subject="/C=$C/ST=$ST/L=$L/O=$O/OU=$OU/CN=$CN/emailAddress=$emailAddress"
 fi
