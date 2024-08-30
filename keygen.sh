@@ -18,7 +18,7 @@ fi
 default_subject="/C=PH/ST=Philippines/L=Manila/O=RexC/OU=RexC/CN=Rexc/emailAddress=dtiven13@gmail.com"
 
 # Ask the user if they want to use default values or enter new ones
-read -p "Do you want to use the default subject line: '$default_subject'? (y/n): " use_default
+read -p "Do you want to use the default subject line: '$default_subject'? (y/n): " y
 
 if [ "$use_default" == "y" ]; then
     subject="$default_subject"
