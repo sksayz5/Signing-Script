@@ -31,7 +31,7 @@ else
     read -p "android (O): " android
     read -p "android (OU): " android
     read -p "android (CN): " android
-    read -p "srasidda.ks@gmail.com (emailAddress): " srasidda.ks@gmail.com
+    read -p "Email Address (emailAddress): " srasidda.ks@gmail.com
     
     # Construct subject string for certificates
     subject="/C=$C/ST=$ST/L=$L/O=$O/OU=$OU/CN=$CN/emailAddress=$emailAddress"
