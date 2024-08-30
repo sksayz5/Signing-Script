@@ -15,7 +15,7 @@ if [ -d ~/.android-certs ]; then
 fi
 
 # Define default subject line
-default_subject="/C=US/ST=California/L=Mountain View/O=Android/OU=Android/CN=Android/emailAddress=android@android.com"
+default_subject="/C=PH/ST=Philippines/L=Manila/O=RexC/OU=RexC/CN=Rexc/emailAddress=dtiven13@gmail.com"
 
 # Ask the user if they want to use default values or enter new ones
 read -p "Do you want to use the default subject line: '$default_subject'? (y/n): " use_default
@@ -25,13 +25,13 @@ if [ "$use_default" == "y" ]; then
 else
     # Prompt user for certificate subject information
     echo "Please enter the following details:"
-    read -p "Country Shortform (In): " C
-    read -p "Country Longform (India): " ST
-    read -p "Location (Bengaluru): " L
-    read -p "Organization (sayz): " O
-    read -p "Organizational Unit (sayz): " OU
-    read -p "Common Name (sayz): " CN
-    read -p "Email Address (srasidda.ks@gmail.com): " emailAddress
+    read -p "Country Shortform (C): " C
+    read -p "Country Longform (ST): " ST
+    read -p "Location (L): " L
+    read -p "Organization (O): " O
+    read -p "Organizational Unit (OU): " OU
+    read -p "Common Name (CN): " CN
+    read -p "Email Address (emailAddress): " emailAddress
     
     # Construct subject string for certificates
     subject="/C=$C/ST=$ST/L=$L/O=$O/OU=$OU/CN=$CN/emailAddress=$emailAddress"
