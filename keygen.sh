@@ -22,6 +22,7 @@ read -p "Do you want to use the default subject line: '$default_subject'? (y/n):
 
 if [ "$use_default" == "y" ]; then
     subject="$default_subject"
+     exit 1
 fi
 
 # Create directory for certificates
