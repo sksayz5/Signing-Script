@@ -1,58 +1,27 @@
 #!/bin/bash
 
-# Define destination directory
-mkdir -p vendor/everest
-destination_dir="vendor/everest/signing"
+# Define the subject for the initial certificates
+subject='/C=PH/ST=Philippines/L=Manila/O=RexC/OU=RexC/CN=Rexc/emailAddress=dtiven13@gmail.com'
 
-# Check if the directory for certificates already exists
-if [ -d ~/.android-certs ]; then
-    read -p "~/.android-certs already exists. Do you want to delete it and proceed? (y/n): " choice
-    if [ "$choice" != "y" ]; then
-        echo "Exiting script."
-        exit 1
-    fi
-    rm -rf ~/.android-certs
-fi
-
-# Define default subject line
-default_subject="/C=PH/ST=Philippines/L=Manila/O=RexC/OU=RexC/CN=Rexc/emailAddress=dtiven13@gmail.com"
-
-# Ask the user if they want to use default values or enter new ones
-read -p "Do you want to use the default subject line: '$default_subject'? (y/n): " use_default
-
-if [ "$use_default" == "y" ]; then
-    subject="$default_subject"
-else
-    # Prompt user for certificate subject information
-    echo "Please enter the following details:"
-    read -p "Country Shortform (C): " C
-    read -p "Country Longform (ST): " ST
-    read -p "Location (L): " L
-    read -p "Organization (O): " O
-    read -p "Organizational Unit (OU): " OU
-    read -p "Common Name (CN): " CN
-    read -p "Email Address (emailAddress): " emailAddress
-
-    # Construct subject string for certificates
-    subject="/C=$C/ST=$ST/L=$L/O=$O/OU=$OU/CN=$CN/emailAddress=$emailAddress"
-fi
-
-# Create directory for certificates
+# Create the directory for the Android certificates
 mkdir -p ~/.android-certs
 
-# Generate keys
-for key_type in releasekey platform shared media networkstack testkey cyngn-priv-app bluetooth sdk_sandbox verifiedboot nfc; do
-    ./development/tools/make_key ~/.android-certs/$key_type "$subject"
+# Generate initial certificates
+for cert in bluetooth cyngn-app media networkstack nfc platform releasekey sdk_sandbox shared testcert testkey verity; do
+yes "" |    ./development/tools/make_key ~/.android-certs/$cert "$subject"
 done
 
-# Move keys to the destination directory
-mkdir -p "$destination_dir/keys"
-mv ~/.android-certs/* "$destination_dir/keys"
+# Copy the make_key tool to the certificates directory
+cp ./development/tools/make_key ~/.android-certs/
 
-# Create product.mk file
-echo "PRODUCT_DEFAULT_DEV_CERTIFICATE := $destination_dir/keys/releasekey" > "$destination_dir/keys.mk"
+# Modify the key size in the make_key tool from 2048 to 4096
+sed -i 's|2048|4096|g' ~/.android-certs/make_key
 
-# Set appropriate permissions
-chmod -R 755 "$destination_dir/keys"
+# Generate APEX keys and convert to PEM format
+for apex in com.android.adbd com.android.adservices com.android.adservices.api com.android.appsearch com.android.art com.android.bluetooth com.android.btservices com.android.cellbroadcast com.android.compos com.android.configinfrastructure com.android.connectivity.resources com.android.conscrypt com.android.devicelock com.android.extservices com.android.graphics.pdf com.android.hardware.biometrics.face.virtual com.android.hardware.biometrics.fingerprint.virtual com.android.hardware.boot com.android.hardware.cas com.android.hardware.wifi com.android.healthfitness com.android.hotspot2.osulogin com.android.i18n com.android.ipsec com.android.media com.android.media.swcodec com.android.mediaprovider com.android.nearby.halfsheet com.android.networkstack.tethering com.android.neuralnetworks com.android.ondevicepersonalization com.android.os.statsd com.android.permission com.android.resolv com.android.rkpd com.android.runtime com.android.safetycenter.resources com.android.scheduling com.android.sdkext com.android.support.apexer com.android.telephony com.android.telephonymodules com.android.tethering com.android.tzdata com.android.uwb com.android.uwb.resources com.android.virt com.android.vndk.current com.android.vndk.current.on_vendor com.android.wifi com.android.wifi.dialog com.android.wifi.resources com.google.pixel.camera.hal com.google.pixel.vibrator.hal com.qorvo.uwb; do
+    subject='/C=PH/ST=Philippines/L=Manila/O=RexC/OU=RexC/CN=Rexc/emailAddress=dtiven13@gmail.com'
+yes "" |    ~/.android-certs/make_key ~/.android-certs/$apex "$subject"
+    openssl pkcs8 -in ~/.android-certs/$apex.pk8 -inform DER -nocrypt -out ~/.android-certs/$apex.pem
+done
 
 echo "Key generation and setup completed successfully."
