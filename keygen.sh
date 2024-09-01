@@ -1,27 +1,61 @@
 #!/bin/bash
 
-# Define the subject for the initial certificates
-subject='/C=PH/ST=Philippines/L=Manila/O=RexC/OU=RexC/CN=Rexc/emailAddress=dtiven13@gmail.com'
+echo "This script will generate Android keys for signing builds."
 
-# Create the directory for the Android certificates
-mkdir -p ~/.android-certs
+# Define the subject line
+subject='/C=US/ST=California/L=Mountain View/O=Android/OU=Android/CN=Android/emailAddress=android@android.com'
 
-# Generate initial certificates
-for cert in bluetooth cyngn-app media networkstack nfc platform releasekey sdk_sandbox shared testcert testkey verity; do
-yes "" |    ./development/tools/make_key ~/.android-certs/$cert "$subject"
+# Print the subject line
+echo "Using Subject Line:"
+echo "$subject"
+
+# Prompt the user to verify if the subject line is correct
+read -p "Is the subject line correct? (y/n): " confirmation
+
+# Check the user's response
+if [[ $confirmation != "y" && $confirmation != "Y" ]]; then
+    echo "Exiting without changes."
+    exit 1
+fi
+clear
+
+# Check for existing Android certs and prompt for removal
+if [ -d "$HOME/.android-certs" ]; then
+    read -p "Existing Android certificates found. Do you want to remove them? (y/n): " remove_confirmation
+    if [[ $remove_confirmation == "y" || $remove_confirmation == "Y" ]]; then
+        rm -rf "$HOME/.android-certs"
+        echo "Old Android certificates removed."
+    else
+        echo "Exiting without changes."
+        exit 1
+    fi
+fi
+
+# Create Key
+echo "Press ENTER TWICE to skip password (about 10-15 enter hits total). Cannot use a password for inline signing!"
+mkdir ~/.android-certs
+
+for x in bluetooth media networkstack nfc platform releasekey sdk_sandbox shared testkey verifiedboot; do 
+    ./development/tools/make_key ~/.android-certs/$x "$subject"
 done
 
-# Copy the make_key tool to the certificates directory
-cp ./development/tools/make_key ~/.android-certs/
+# Create vendor directory for keys
+mkdir -p vendor/lineage-priv
+mv ~/.android-certs vendor/lineage-priv/keys
+echo "PRODUCT_DEFAULT_DEV_CERTIFICATE := vendor/lineage-priv/keys/releasekey" > vendor/lineage-priv/keys/keys.mk
 
-# Modify the key size in the make_key tool from 2048 to 4096
-sed -i 's|2048|4096|g' ~/.android-certs/make_key
+# Create BUILD.bazel file
+cat <<EOF > vendor/lineage-priv/keys/BUILD.bazel
+filegroup(
+    name = "android_certificate_directory",
+    srcs = glob([
+        "*.pk8",
+        "*.pem",
+    ]),
+    visibility = ["//visibility:public"],
+)
+EOF
 
-# Generate APEX keys and convert to PEM format
-for apex in com.android.adbd com.android.adservices com.android.adservices.api com.android.appsearch com.android.art com.android.bluetooth com.android.btservices com.android.cellbroadcast com.android.compos com.android.configinfrastructure com.android.connectivity.resources com.android.conscrypt com.android.devicelock com.android.extservices com.android.graphics.pdf com.android.hardware.biometrics.face.virtual com.android.hardware.biometrics.fingerprint.virtual com.android.hardware.boot com.android.hardware.cas com.android.hardware.wifi com.android.healthfitness com.android.hotspot2.osulogin com.android.i18n com.android.ipsec com.android.media com.android.media.swcodec com.android.mediaprovider com.android.nearby.halfsheet com.android.networkstack.tethering com.android.neuralnetworks com.android.ondevicepersonalization com.android.os.statsd com.android.permission com.android.resolv com.android.rkpd com.android.runtime com.android.safetycenter.resources com.android.scheduling com.android.sdkext com.android.support.apexer com.android.telephony com.android.telephonymodules com.android.tethering com.android.tzdata com.android.uwb com.android.uwb.resources com.android.virt com.android.vndk.current com.android.vndk.current.on_vendor com.android.wifi com.android.wifi.dialog com.android.wifi.resources com.google.pixel.camera.hal com.google.pixel.vibrator.hal com.qorvo.uwb; do
-    subject='/C=PH/ST=Philippines/L=Manila/O=RexC/OU=RexC/CN=Rexc/emailAddress=dtiven13@gmail.com'
-yes "" |    ~/.android-certs/make_key ~/.android-certs/$apex "$subject"
-    openssl pkcs8 -in ~/.android-certs/$apex.pk8 -inform DER -nocrypt -out ~/.android-certs/$apex.pem
-done
-
-echo "Key generation and setup completed successfully."
+echo "Done! Now build as usual. If builds aren't being signed, add '-include vendor/lineage-priv/keys/keys.mk' to your device mk file"
+echo "Make copies of your vendor/lineage-priv folder or upload it to a private repository as it contains your keys!"
+sleep 3
