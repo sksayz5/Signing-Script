@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Define destination directory
-mkdir -p vendor/everest
-destination_dir="vendor/everest/signing"
+mkdir -p vendor/evolution-priv
+destination_dir="vendor/evolution-priv"
 
 # Check if the directory for certificates already exists
 if [ -d ~/.android-certs ]; then
